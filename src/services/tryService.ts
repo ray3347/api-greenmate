@@ -6,7 +6,6 @@ import { AuthGuard } from "./AuthGuard";
 export class tryService{
     constructor(private readonly tryHelper: tryHelper){}
 
-    @UseGuards(AuthGuard)
     @Get()
     async generateText() : Promise<string> {
         try{
