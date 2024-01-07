@@ -4,6 +4,6 @@ import { Injectable } from "@nestjs/common";
 export class tryHelper {
     
     generateText() : string {
-        return 'GreenMate API V1.0 made with NestJS'
+        return 'GreenMate API V1.2 made with NestJS'
     }
 }
