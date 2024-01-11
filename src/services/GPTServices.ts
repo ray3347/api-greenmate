@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   ForbiddenException,
   Get,
   HttpStatus,
   Param,
+  Post,
   Query,
   Res,
   UseGuards,
@@ -62,6 +64,21 @@ export class GPTServices {
 
       response.end();
     } catch (ex) {
+      return response.status(ex.status).json(ex.response);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('chat')
+  async chat(@Res() response, @Body('chat') chatHistory:OpenAI.Chat.Completions.CreateChatCompletionRequestMessage[]): Promise<string>{
+    try{
+      const data = await this.gptHelper.chat(chatHistory);
+
+      return response.status(HttpStatus.OK).json({
+        data: data
+    }); 
+    }
+    catch(ex){
       return response.status(ex.status).json(ex.response);
     }
   }
