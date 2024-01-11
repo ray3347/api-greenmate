@@ -37,19 +37,21 @@ export class GPTHelper {
     return completion.choices[0].message.content;
   }
 
-  async chat(chatHistory : OpenAI.Chat.Completions.CreateChatCompletionRequestMessage[]): Promise<OpenAI.Chat.Completions.CreateChatCompletionRequestMessage>{
+  async chat(
+    chatHistory: OpenAI.Chat.Completions.CreateChatCompletionRequestMessage[],
+  ): Promise<OpenAI.Chat.Completions.CreateChatCompletionRequestMessage> {
     const completion = await openai.chat.completions.create({
-      messages:[
+      messages: [
         {
           role: 'system',
-          content: 'You are a botanical and home gardening expert, in a conversation with a beginner asking you about tips around home gardening / house plants. You must not answer any question outside of that scope, and you must answer each question or message briefly with the maximum of 1 sentence, and in that sentence give as much instruction detail (with measurement numbers if necessary) as possible.'
+          content:
+            'You are a botanical and home gardening expert, in a conversation with a beginner asking you about tips around home gardening / house plants. If they ask for a tutorial or you to teach them how to do something, give them very very brief instructions, don\'t apologize and be cheerful then refer them to the tutorial feature in the GreenMate application. You must not answer any question outside of home gardening or houseplants scope, and you must answer each question or message briefly with the maximum of 1 sentence and you MUST NOT go over this limitation whatever the circumstances, and in that sentence give as much instruction detail (with measurement numbers if necessary) as possible.',
         },
-        ...chatHistory
+        ...chatHistory,
       ],
-      model: 'gpt-3.5-turbo'
-    })
+      model: 'gpt-3.5-turbo',
+    });
 
     return completion.choices[0].message;
   }
-
 }
