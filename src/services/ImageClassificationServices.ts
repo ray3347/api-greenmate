@@ -6,7 +6,7 @@ import { ApiService } from "src/constants/ApiService";
 import { HttpService } from "src/constants/HttpService";
 import { IClassifiedImageResponseDTO } from "src/models/response/IClassifiedImageResponseDTO";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { PlantDatabase } from "src/models/entities/plant/Plant";
+import { PlantHelper } from "src/helper/PlantHelper";
 
 @Controller('images')
 export class ImageClassificationServices{
@@ -17,11 +17,12 @@ export class ImageClassificationServices{
     @UseInterceptors(FileInterceptor('imgData'))
     async classify(@Res() response,@UploadedFile() file): Promise<string>{
         try{
+            const plantHelper : PlantHelper = new PlantHelper();
             const imgData = file.buffer.toString('base64')
             const data : IClassifiedImageResponseDTO = await this.helper.classify(imgData)
 
             if(data.predictions.length > 0){
-                const plant = PlantDatabase.find((x)=>x.class === data.predictions[0].class);
+                const plant = await plantHelper.getSingularPlant(data.predictions[0].class);
 
                 if(!plant){
                     return response.status(HttpStatus.OK).json({

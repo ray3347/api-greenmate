@@ -1,15 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { IPlant } from "src/models/entities/plant/IPlant";
-import { PlantDatabase } from "src/models/entities/plant/Plant";
+import { DocumentData, QuerySnapshot, collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "src/models/entities/firebase";
 
 @Injectable()
 export class PlantHelper{
-    async getAllPlants():Promise<IPlant[]>{
-        return PlantDatabase;
+    async getAllPlants(){
+        const plantData = [];
+        const dbData = await getDocs(collection(db, 'master_plants'));
+
+        dbData.forEach((plant) => {
+            plantData.push(plant.data());
+        });
+
+        return plantData;
     }
 
-    async getSingularPlant(className:string):Promise<IPlant>{
-        const findPlant = PlantDatabase.find((x)=>x.class===className);
-        return findPlant ?? null;
+    async getSingularPlant(className:string){
+        var plant=null;
+        const findPlant = await getDocs(query(collection(db, 'master_plants'), where('class', "==", className)));
+        findPlant.forEach(x => {
+            plant = x.data();
+        });
+        return plant;
     }
 }

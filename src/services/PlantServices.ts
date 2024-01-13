@@ -2,6 +2,8 @@ import { Controller, Get, HttpStatus, Param, Res, UseGuards } from '@nestjs/comm
 import { PlantHelper } from 'src/helper/PlantHelper';
 import { IPlant } from 'src/models/entities/plant/IPlant';
 import { AuthGuard } from './AuthGuard';
+import { addDoc, collection, getDoc, getDocs } from 'firebase/firestore';
+import { db } from 'src/models/entities/firebase';
 
 @Controller('plants')
 export class PlantServices {
@@ -9,9 +11,9 @@ export class PlantServices {
 
   @UseGuards(AuthGuard)
   @Get('get')
-  async getAllPlants(@Res() response): Promise<IPlant[]> {
+  async getAllPlants(@Res() response) {
     try {
-      const data = await this.helper.getAllPlants();
+      const data = await this.helper.getAllPlants();     
 
       return response.status(HttpStatus.OK).json({
         data: data,
